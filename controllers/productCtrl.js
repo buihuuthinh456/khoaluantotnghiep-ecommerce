@@ -66,11 +66,21 @@ const productCtrl = {
             .filtering().sorting().paginating()
             const products = await features.query
             
-            res.json({
+            return res.status(200).json({
                 status: 'success',
                 result: products.length,
                 products: products
             })
+        } catch (err) {
+            return res.status(500).json({msg:err.message})
+        }
+    },
+    getProduct: async(req,res)=>{
+        try {
+            const productId = req.params.id;
+            const product = await Products.findById(productId)
+            if(!product) return res.status(400).json({msg:"Product doesn't exist"})
+            res.status(200).json(product)
         } catch (err) {
             return res.status(500).json({msg:err.message})
         }
@@ -180,8 +190,11 @@ const productCtrl = {
         try {
             const commentId = req.params.idComment;
             const {userId}=req.body;
+        
             await Comments.findByIdAndDelete({_id:commentId,userId:userId})
-            return res.status(400).json({msg:"Comment is deleted"})
+            return res.status(200).json({msg:"Comment is deleted"})
+ 
+            
         } catch (err) {
             return res.status(500).json({msg:err.message})
         }

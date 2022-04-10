@@ -18,13 +18,14 @@ cloudinary.config({
 router.post('/upload',auth,authAdmin,(req,res)=>{
     try {
         if(!req.files || Object.keys(req.files).length===0)
-            return res.status(200).json({msg:"No file were upload"});
+            return res.status(400).json({msg:"No file were upload"});
         const fileUpload = req.files.fileUpload;
+        console.log(fileUpload)
         // 1024*1024*2 = 2MB
         // Only upload file lower than 2MB
         if(fileUpload.size > 1024*1024*2){
             removeTmp(fileUpload.tempFilePath)
-            return res.status(200).json({msg:"Size too large. Please use max size lower than 2MB"})
+            return res.status(400).json({msg:"Size too large. Please use max size lower than 2MB"})
         }
 
         // Check type file , only admit image
