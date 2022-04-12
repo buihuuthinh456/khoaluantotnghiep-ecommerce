@@ -11,6 +11,7 @@ router.route("/product")
 router.route("/product/:id")
     .delete(auth,authAdmin,productCtrl.deleteProduct)
     .put(auth,authAdmin,productCtrl.updateProduct)
+    .get(auth,productCtrl.getProduct)
 
 router.route("/product/:id/comment")
     .get(productCtrl.getComments)
