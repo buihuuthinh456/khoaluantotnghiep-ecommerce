@@ -59,13 +59,17 @@ class APIfeatures {
 const productCtrl = {
     getProducts: async(req,res)=>{
         try {
-            const totalProduct = await Products.countDocuments({});
             // return res.status(200).json(products)
             const features = new APIfeatures(Products.find(),req.query)
+            .filtering()
+            const featureHavePaginate = new APIfeatures(Products.find(),req.query)
             .filtering().sorting().paginating()
-            const products = await features.query
-
-            const totalPageFloat = totalProduct/products.length
+            // const products = await featureHavePaginate.query
+            // const totalProduct = await features.query
+            const result = await Promise.all([featureHavePaginate.query,features.query])
+            const products = result[0]
+            const totalProduct = result[1]
+            const totalPageFloat = totalProduct.length/products.length
             let totalPage = Math.floor(totalPageFloat)
             let float = totalPageFloat - totalPage
             if(float>0){
