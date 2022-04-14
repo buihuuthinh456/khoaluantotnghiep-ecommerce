@@ -47,7 +47,7 @@ class APIfeatures {
     }
     paginating(){
         const page = this.queryString.page * 1 || 1
-        const limit = this.queryString.limit * 1 || 20
+        const limit = this.queryString.limit * 1 || 5
         const skip = (page - 1) * limit;
         this.query = this.query.skip(skip).limit(limit)
         return this;
@@ -59,17 +59,24 @@ class APIfeatures {
 const productCtrl = {
     getProducts: async(req,res)=>{
         try {
-            // const products = await Products.find();
-
+            const totalProduct = await Products.countDocuments({});
             // return res.status(200).json(products)
             const features = new APIfeatures(Products.find(),req.query)
             .filtering().sorting().paginating()
             const products = await features.query
+
+            const totalPageFloat = totalProduct/products.length
+            let totalPage = Math.floor(totalPageFloat)
+            let float = totalPageFloat - totalPage
+            if(float>0){
+                totalPage = totalPage + 1;
+            } 
             
             return res.status(200).json({
                 status: 'success',
                 result: products.length,
-                products: products
+                products: products,
+                totalPage
             })
         } catch (err) {
             return res.status(500).json({msg:err.message})
