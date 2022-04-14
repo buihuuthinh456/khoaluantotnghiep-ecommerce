@@ -28,8 +28,12 @@ const productSchema = new mongoose.Schema({
     description:{
         type:String,
         required:true,
+    },
+    views:{
+        type:Number,
+        required:false,
+        default:0,
     }
-    
-})
+},{timestamps:true})
 
 module.exports = mongoose.model("products",productSchema);

@@ -198,7 +198,25 @@ const productCtrl = {
         } catch (err) {
             return res.status(500).json({msg:err.message})
         }
-    }
+    },
+
+    increaseViews:async(req,res)=>{
+        try {
+            const productId = req.params.id;
+            const product = Products.findById(productId)
+            const {views,...info} = product;
+
+            const updateProduct = new Products({
+                ...info, views: views + 1
+            })
+
+            await updateProduct.save()
+
+            return res.status(200).json({msg:"Increase Views Successfull"})
+        } catch (err) {
+            return res.status(500).json({msg:err.message})
+        }
+    },
 }
 
 

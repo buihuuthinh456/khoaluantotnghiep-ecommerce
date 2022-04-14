@@ -18,11 +18,15 @@ const userRouter = require('./router/userRouter');
 const categoryRouter = require('./router/categoryRouter');
 const productRouter = require('./router/productRouter');
 const uploadRouter = require('./router/upImagesProduct');
+const homeRouter = require('./router/homeRouter');
 
+
+app.use('/',homeRouter);
 app.use('/user',userRouter);
 app.use('/api',categoryRouter);
 app.use('/api',productRouter);
 app.use('/api',uploadRouter);
+
 
 // Connect to MongoDB
 const URI = process.env.MONGODB_URL;
