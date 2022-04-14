@@ -60,6 +60,7 @@ const productCtrl = {
     getProducts: async(req,res)=>{
         try {
             // return res.status(200).json(products)
+            const {limit,page} = req.query 
             const features = new APIfeatures(Products.find(),req.query)
             .filtering()
             const featureHavePaginate = new APIfeatures(Products.find(),req.query)
@@ -68,20 +69,32 @@ const productCtrl = {
             // const totalProduct = await features.query
             const result = await Promise.all([featureHavePaginate.query,features.query])
             const products = result[0]
-            const totalProduct = result[1]
-            const totalPageFloat = totalProduct.length/products.length
-            let totalPage = Math.floor(totalPageFloat)
-            let float = totalPageFloat - totalPage
-            if(float>0){
-                totalPage = totalPage + 1;
-            } 
+            if(products.length < limit){
+                const totalPage = Number(page)
+                return res.status(200).json({
+                    status: 'success',
+                    result: products.length,
+                    products: products,
+                    totalPage
+                })
+            }
+            else{
+                const totalProduct = result[1]
+                const totalPageFloat = totalProduct.length/products.length
+                let totalPage = Math.floor(totalPageFloat)
+                let float = totalPageFloat - totalPage
+                if(float>0){
+                    totalPage = totalPage + 1;
+                } 
+                return res.status(200).json({
+                    status: 'success',
+                    result: products.length,
+                    products: products,
+                    totalPage
+                })
+            }
             
-            return res.status(200).json({
-                status: 'success',
-                result: products.length,
-                products: products,
-                totalPage
-            })
+           
         } catch (err) {
             return res.status(500).json({msg:err.message})
         }
