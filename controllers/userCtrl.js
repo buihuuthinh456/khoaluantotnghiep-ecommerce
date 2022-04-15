@@ -44,7 +44,7 @@ const userCtrl = {
             // If login success is create Token
 
             const accessToken = createAccessToken({id:user._id});
-	        const {password:pass,isAdmin,...userInfo}=user._doc;
+	        const {password:pass,...userInfo}=user._doc;
 
             res.json({accessToken,...userInfo});
         } catch (err) {
