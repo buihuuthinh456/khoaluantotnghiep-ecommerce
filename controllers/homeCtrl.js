@@ -3,9 +3,9 @@ const Categories = require('../models/categoryModel');
 const homeCtrl = {
     getHome: async(req,res)=>{
         try {
-            const listproduct = Products.find().sort('createdAt').limit(10);
-            const productsBestViews = Products.find().sort('-views').limit(10);
-            const productsLastest = Products.find().sort('-createdAt').limit(10);
+            const listproduct = Products.find().sort('createdAt').limit(20);
+            const productsBestViews = Products.find().sort('-views').limit(20);
+            const productsLastest = Products.find().sort('-createdAt').limit(20);
             const listCategory = Categories.find().sort('-createdAt')
 
             const result = await Promise.all([listproduct,productsBestViews,productsLastest,listCategory])
