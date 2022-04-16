@@ -19,6 +19,7 @@ const categoryRouter = require('./router/categoryRouter');
 const productRouter = require('./router/productRouter');
 const uploadRouter = require('./router/upImagesProduct');
 const homeRouter = require('./router/homeRouter');
+const pageCategoryRouter = require('./router/pageCategoryRouter');
 
 
 app.use('/',homeRouter);
@@ -26,6 +27,7 @@ app.use('/user',userRouter);
 app.use('/api',categoryRouter);
 app.use('/api',productRouter);
 app.use('/api',uploadRouter);
+app.use('/page',pageCategoryRouter);
 
 
 // Connect to MongoDB

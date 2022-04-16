@@ -12,15 +12,12 @@ const categoryCtrl = {
     createCategory: async(req,res)=>{
         try {
             // Only admin can create, delete and update category
-
             const {name} = req.body;
             const category = await Categories.findOne({name});
             if(category) return res.status(400).json({msg:"This category already exists"})
             const newCategory = new Categories({name})
             await newCategory.save();
-
             return res.status(200).json({msg:"Create Successfull"})
-
         } catch (err) {
             return res.status(500).json({msg:err.message})
         }
