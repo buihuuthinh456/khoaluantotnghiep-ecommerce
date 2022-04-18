@@ -11,8 +11,8 @@ const categoryCtrl = {
         }
     },
     createCategory: async(req,res)=>{
-        console.log('12321',req.body)
-        console.log(JSON.parse(req.body))
+        console.log(req.body)
+
         return res.status(200).json(req.body)
     },
 }
