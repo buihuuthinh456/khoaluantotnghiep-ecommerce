@@ -4,7 +4,6 @@ const categoryCtrl = {
     getCategories: async(req,res)=>{
         try {
             const categories = await Categories.find();
-            console.log(categories)
             res.json(categories)
         } catch (err) {
             return res.status(500).json({msg:err.message})
