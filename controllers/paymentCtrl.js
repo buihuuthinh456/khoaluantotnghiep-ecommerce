@@ -12,6 +12,7 @@ const categoryCtrl = {
     },
     createCategory: async(req,res)=>{
         const {extraData} = req.body
+        console.log(extraData)
         return res.status(200).json(extraData)
     },
 }
