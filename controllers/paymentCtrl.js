@@ -1,4 +1,5 @@
 const Categories = require('../models/categoryModel');
+const base64 = require('base-64')
 
 const categoryCtrl = {
     getCategories: async(req,res)=>{
@@ -10,8 +11,8 @@ const categoryCtrl = {
         }
     },
     createCategory: async(req,res)=>{
-        console.log(req.body)
-        return res.status(200).json("Hay")
+        const {extraData} = req.body
+        return res.status(200).json(extraData)
     },
 }
 

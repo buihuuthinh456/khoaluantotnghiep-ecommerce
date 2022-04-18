@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "base-64": "^1.0.0",
     "bcrypt": "^5.0.1",
     "cloudinary": "^1.28.1",
     "concurrently": "^7.0.0",
