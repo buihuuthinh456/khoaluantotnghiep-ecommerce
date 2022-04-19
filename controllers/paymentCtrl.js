@@ -28,6 +28,7 @@ const categoryCtrl = {
         const signatureVerify = crypto.createHmac('sha256', secretkey)
             .update(rawSignature)
             .digest('hex');
+        console.log(rawSignature)
         if(signature===signatureVerify){
             if(resultCode===0){
                 console.log('Thành công mĩ mãn')
