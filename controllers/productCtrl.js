@@ -109,6 +109,16 @@ const productCtrl = {
             return res.status(500).json({msg:err.message})
         }
     },
+    getProductById: async(req,res)=>{
+        try {
+            const productId = req.body.id;
+            const product = await Products.findById(productId)
+            if(!product) return res.status(400).json({msg:"Product doesn't exist"})
+            res.status(200).json(product)
+        } catch (err) {
+            return res.status(500).json({msg:err.message})
+        }
+    },
     createProduct:async(req,res)=>{
         try {
             const {productId,name,images,category,price,description,quantity} = req.body

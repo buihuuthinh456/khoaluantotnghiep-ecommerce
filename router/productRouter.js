@@ -7,6 +7,7 @@ const authAdmin = require('../middleware/authAdmin');
 router.route("/product")
     .get(productCtrl.getProducts)
     .post(auth,authAdmin,productCtrl.createProduct)
+router.get("/product/byid",productCtrl.getProductById)
 
 router.route("/product/:id")
     .delete(auth,authAdmin,productCtrl.deleteProduct)
