@@ -28,7 +28,7 @@ const categoryCtrl = {
             .update(rawSignature)
             .digest('hex');
         if(signature===signatureVerify){
-            if(resultCode=0){
+            if(resultCode===0){
                 console.log('Thành công mĩ mãn')
             return res.status(200).json(objReturn)
             }
