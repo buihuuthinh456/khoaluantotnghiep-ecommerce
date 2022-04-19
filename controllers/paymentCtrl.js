@@ -15,7 +15,7 @@ const categoryCtrl = {
         const {amount,extraData,orderId,orderInfo,requestId,requestType,signature,resultCode} = req.body
         const dataString = Base64.decode(req.body.extraData)
         const objReturn = {...req.body,extraData:JSON.parse(dataString)}
-        // console.log(req.body)
+        console.log(req.body)
         // console.log(objReturn)
         const partnerCode = "MOMOGBTS20220418";
         const accessKey = "KGDQTLnO7joW8VLr";
