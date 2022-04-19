@@ -12,7 +12,7 @@ const categoryCtrl = {
         }
     },
     createCategory: async(req,res)=>{
-        const {amount,extraData,orderId,orderInfo,requestId,requestType,signature,resultCode} = req.body
+        const {amount,extraData,orderId,orderInfo,requestId,signature,resultCode} = req.body
         const dataString = Base64.decode(req.body.extraData)
         const objReturn = {...req.body,extraData:JSON.parse(dataString)}
         console.log(req.body)
@@ -22,7 +22,8 @@ const categoryCtrl = {
         const secretkey = "TvNolIYyB2VtU586qksVtSnRlGGZhAIw";
         const ipnUrl = "https://khoaluantotnghiep-ecommerce.herokuapp.com/api/payment/ipn";
         const redirectUrl = "http://localhost:3000/login";
-        const rawSignature = "accessKey="+accessKey+"&amount=" + amount+"&extraData=" + extraData+"&ipnUrl=" + ipnUrl+"&orderId=" + orderId+"&orderInfo=" + orderInfo+"&partnerCode=" + partnerCode +"&redirectUrl=" + redirectUrl+"&requestId=" + requestId
+        const requestType = "captureWallet";
+        const rawSignature = "accessKey="+accessKey+"&amount=" + amount+"&extraData=" + extraData+"&ipnUrl=" + ipnUrl+"&orderId=" + orderId+"&orderInfo=" + orderInfo+"&partnerCode=" + partnerCode +"&redirectUrl=" + redirectUrl+"&requestId=" + requestId +"&requestType="+requestType
         console.log(rawSignature)
         const signatureVerify = crypto.createHmac('sha256', secretkey)
             .update(rawSignature)
