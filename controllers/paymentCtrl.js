@@ -1,5 +1,6 @@
 const Categories = require('../models/categoryModel');
-const {Base64} = require('js-base64')
+const {Base64} = require('js-base64');
+const crypto = require('crypto');
 
 const categoryCtrl = {
     getCategories: async(req,res)=>{
@@ -27,6 +28,8 @@ const categoryCtrl = {
         const signatureVerify = crypto.createHmac('sha256', secretkey)
             .update(rawSignature)
             .digest('hex');
+
+        
         if(signature===signatureVerify){
             if(resultCode===0){
                 console.log('Thành công mĩ mãn')
