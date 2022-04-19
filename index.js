@@ -6,6 +6,8 @@ const cors = require('cors');
 
 const fileUpload = require('express-fileupload');
 
+const {Base64} = require('js-base64');
+
 const app = express();
 
 app.use(express.json());
