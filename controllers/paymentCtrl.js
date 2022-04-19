@@ -15,7 +15,7 @@ const categoryCtrl = {
         const dataString = Base64.decode(req.body.extraData)
         console.log(dataString)
         const objReturn = {...req.body,extraData:JSON.parse(dataString)}
-
+        console.log(objReturn)
         return res.status(200).json(objReturn)
     },
 }
