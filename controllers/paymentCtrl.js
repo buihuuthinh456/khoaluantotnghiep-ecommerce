@@ -12,7 +12,7 @@ const categoryCtrl = {
         }
     },
     createCategory: async(req,res)=>{
-        const {amount,responseTime,message,extraData,orderId,orderInfo,requestId,signature,resultCode} = req.body
+        const {amount,responseTime,message,extraData,orderId,orderInfo,requestId,signature,resultCode,orderType,payType,transId} = req.body
         const dataString = Base64.decode(req.body.extraData)
         const objReturn = {...req.body,extraData:JSON.parse(dataString)}
         console.log(req.body)
@@ -20,7 +20,7 @@ const categoryCtrl = {
         const partnerCode = "MOMOGBTS20220418";
         const accessKey = "KGDQTLnO7joW8VLr";
         const secretkey = "TvNolIYyB2VtU586qksVtSnRlGGZhAIw";
-        const rawSignature = "accessKey="+accessKey +"&extraData="+extraData+"&message="+message+"&orderId="+orderId+"&partnerCode="+partnerCode+"&requestId="+requestId+"&responseTime="+responseTime+"&resultCode="+resultCode
+        const rawSignature = "accessKey="+accessKey +"&amount="+amount +"&extraData="+extraData+"&message="+message+"&orderId="+orderId+"&orderInfo="+orderInfo+"&orderType="+orderType+"&partnerCode="+partnerCode+"&payType="+payType+"&requestId="+requestId+"&responseTime="+responseTime+"&resultCode="+resultCode+"&transId="+transId
         console.log(rawSignature)
         const signatureVerify = crypto.createHmac('sha256', secretkey)
             .update(rawSignature)

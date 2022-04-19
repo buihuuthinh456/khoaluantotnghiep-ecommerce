@@ -6,7 +6,7 @@ const cors = require('cors');
 
 const fileUpload = require('express-fileupload');
 
-const {Base64} = require('js-base64');
+
 
 const app = express();
 
@@ -38,6 +38,9 @@ app.use('/page',pageCategoryRouter);
 // Connect to MongoDB
 const URI = process.env.MONGODB_URL;
 const PORT = process.env.PORT || 5000;
+
+
+
 
 mongoose.connect(URI,{
     useNewUrlParser:true,
