@@ -20,12 +20,12 @@ const categoryCtrl = {
         const partnerCode = "MOMOGBTS20220418";
         const accessKey = "KGDQTLnO7joW8VLr";
         const secretkey = "TvNolIYyB2VtU586qksVtSnRlGGZhAIw";
-        const rawSignature = "accessKey="+accessKey +"&extraData="+extraData+"&message="+message+"&orderId="+orderId+"&partnerCode="+partnerCode+"&requestId="+requestId+"&responseTime"+responseTime+"&resultCode"+resultCode
+        const rawSignature = "accessKey="+accessKey +"&extraData="+extraData+"&message="+message+"&orderId="+orderId+"&partnerCode="+partnerCode+"&requestId="+requestId+"&responseTime="+responseTime+"&resultCode="+resultCode
         console.log(rawSignature)
         const signatureVerify = crypto.createHmac('sha256', secretkey)
             .update(rawSignature)
             .digest('hex');
-        console.log(rawSignature)
+        console.log(signatureVerify)
         if(signature===signatureVerify){
             if(resultCode===0){
                 console.log('Thành công mĩ mãn')
