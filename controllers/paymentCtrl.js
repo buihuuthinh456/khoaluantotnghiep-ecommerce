@@ -12,10 +12,10 @@ const categoryCtrl = {
     },
     createCategory: async(req,res)=>{
         console.log(req.body.extraData)
-        const data = Base64.decode(req.body.extraData)
-        console.log(data)
+        const dataString = Base64.decode(req.body.extraData)
+        console.log(dataString)
 
-        return res.status(200).json({data})
+        return res.status(200).json({data:JSON.parse(dataString)})
     },
 }
 
