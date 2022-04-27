@@ -13,7 +13,9 @@ router.route("/product/:id")
     .delete(auth,authAdmin,productCtrl.deleteProduct)
     .put(auth,authAdmin,productCtrl.updateProduct)
     .get(productCtrl.getProduct)
-    .post(productCtrl.increaseViews)
+router.route("/product/:id/views")
+    .put(productCtrl.increaseViews)
+
 
 router.route("/product/:id/comment")
     .get(productCtrl.getComments)

@@ -12,16 +12,19 @@ const paymentCtrl = {
         }
     },
     createPayment: async (req,res)=>{
-        console.log(req.body)
-        // const {data} = req.body
+        const _id = req.user.id
+        // const {cart} = req.body
+        const cart = [
+            {
+                id:1,
+                name:"222"
+            }
+        ]
+
+
         const data = {
-            userId:"1232323",
-            cart:[
-                {
-                    id:1,
-                    name:"222"
-                }
-            ]
+            userId:_id,
+            cart:cart
         }
         const dataString = JSON.stringify(data)
         const partnerCode = process.env.PARTNER_CODE;

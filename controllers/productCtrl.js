@@ -103,6 +103,7 @@ const productCtrl = {
         try {
             const productId = req.params.id;
             const product = await Products.findById(productId)
+
             if(!product) return res.status(400).json({msg:"Product doesn't exist"})
             res.status(200).json(product)
         } catch (err) {
@@ -237,21 +238,19 @@ const productCtrl = {
     increaseViews:async(req,res)=>{
         try {
             const productId = req.params.id;
-            const product = Products.findById(productId)
-            const {views,...info} = product;
+            const product = await Products.findById(productId)
+            const {views,...info} = product._doc;
 
+           
             const updateProduct = new Products({
                 ...info, views: views + 1
             })
-
-            await updateProduct.save()
-
-            return res.status(200).json({msg:"Increase Views Successfull"})
+            // await updateProduct.save()
+            const newProduct = await Products.findByIdAndUpdate({_id:productId},updateProduct,{new:true});
+            return res.status(200).json(newProduct)
         } catch (err) {
             return res.status(500).json({msg:err.message})
         }
     },
 }
-
-
 module.exports = productCtrl;

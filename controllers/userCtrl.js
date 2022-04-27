@@ -68,6 +68,49 @@ const userCtrl = {
         } catch (error) {
             return res.status(500).json({msg:error.message})
         }
+    },
+    addProductIntoCart: async(req,res)=>{
+        try {
+            const {userId} = req.params
+            const {item} = req.body
+            const user = await Users.findOne({_id:userId}).select('-password');
+            if(user){
+                let {cart} = user
+                cart = [...cart,item]
+                // Check những item trùng trong cart để cộng dồn
+                const newCart = cart.reduce((previousValue,currentValue)=>{
+                    if(previousValue.length!==0){
+                        let index = previousValue.findIndex(data => data._id === currentValue._id);
+                        if(index!==-1){
+                            if(previousValue[index]["quantity"] + currentValue["quantity"]>0){
+                                previousValue[index]["quantity"] = previousValue[index]["quantity"] + currentValue["quantity"]
+                                return [...previousValue] 
+                            }else{
+                                [previousValue[index],...value] = previousValue
+                                return value
+                            }
+                        }
+                        else{
+                            if(currentValue["quantity"]<=0) return [...previousValue]
+                            else return [...previousValue,currentValue] 
+                        }
+                    }
+                    else{
+                        return [...previousValue,currentValue]
+                    }
+                },[])
+                const newUser = await Users.findOneAndUpdate({_id:userId},{cart:newCart},{
+                    new:true,
+                }).select('-password')
+                return res.status(200).json(newUser)
+            }else{
+                return res.status(400).json('User does not exists')
+            }
+            
+        } catch (error) {
+            console.log(error.message)
+            return res.status(500).json({msg:error.message})
+        }
     }
 }
 

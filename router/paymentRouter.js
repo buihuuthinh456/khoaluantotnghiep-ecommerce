@@ -6,7 +6,7 @@ const authAdmin = require('../middleware/authAdmin');
 router.route('/payment/ipn')
     .get(auth,paymentCtrl.getOrders)
     .post(paymentCtrl.createOrder)
-router.post('/payment/create-payment',paymentCtrl.createPayment)
+router.post('/payment/create-payment',auth,paymentCtrl.createPayment)
 
 
 

@@ -5,9 +5,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const fileUpload = require('express-fileupload');
-
-
-
 const app = express();
 
 app.use(express.json());
@@ -33,14 +30,9 @@ app.use('/api',paymentRouter);
 
 app.use('/page',pageCategoryRouter);
 
-
-
 // Connect to MongoDB
 const URI = process.env.MONGODB_URL;
 const PORT = process.env.PORT || 5000;
-
-
-
 
 mongoose.connect(URI,{
     useNewUrlParser:true,
