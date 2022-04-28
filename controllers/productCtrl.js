@@ -193,7 +193,8 @@ const productCtrl = {
     createComment:async(req,res)=>{
         try {
             const productId = req.params.id;
-            const {userId,content} = req.body;
+            const {content} = req.body;
+            const {id:userId} = req.user;
             const newComment = new Comments({
                 productId,userId,content
             })
