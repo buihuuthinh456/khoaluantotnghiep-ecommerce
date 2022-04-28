@@ -1,5 +1,6 @@
 const Products = require('../models/productModel');
 const Comments = require('../models/commentModel');
+const Users = require('../models/userModel');
 const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
@@ -195,13 +196,14 @@ const productCtrl = {
             const productId = req.params.id;
             const {content} = req.body;
             const {id:userId} = req.user;
+
+            const user = await Users.findById(userId).select("-password");
+            const username = user.name
             const newComment = new Comments({
-                productId,userId,content
+                productId,userId,content,username
             })
-
-            await newComment.save()
-
-            return res.status(200).json({msg:"Comment is created"})
+            const newComments = await newComment.save()
+            return res.status(200).json(newComments)
         } catch (err) {
             return res.status(500).json({msg:err.message})
         }
