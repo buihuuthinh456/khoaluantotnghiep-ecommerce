@@ -7,7 +7,7 @@ class APIfeatures {
     }
     filtering(){
         const queryObj = {...this.queryString} //queryString = req.query
-
+        console.log(queryObj)
         const excludedFields = ['page','sort','limit']
         excludedFields.forEach(el=>delete(queryObj[el]))
 
@@ -37,7 +37,7 @@ class APIfeatures {
     }
     paginating(){
         const page = this.queryString.page * 1 || 1
-        const limit = this.queryString.limit * 1 || 10
+        const limit = this.queryString.limit * 1 || 9
         const skip = (page - 1) * limit;
         this.query = this.query.skip(skip).limit(limit)
         return this;
@@ -58,13 +58,14 @@ const pageCategoryCtrl = {
             // const totalProduct = await features.query
             const result = await Promise.all([featureHavePaginate.query,features.query])
             const products = result[0]
-            if(products.length < limit){
+            if(products.length <= limit){
                 const totalPage = Number(page)
                 return res.status(200).json({
                     status: 'success',
                     result: products.length,
                     products: products,
-                    totalPage
+                    totalPage,
+                    url
                 })
             }
             else{
@@ -79,13 +80,13 @@ const pageCategoryCtrl = {
                     status: 'success',
                     result: products.length,
                     products: products,
-                    totalPage
+                    totalPage,
                 })
             }
         } catch (error) {
             return res.status(500).json({msg:error.message})
         }
-    }
+    },
 }
 
 module.exports =  pageCategoryCtrl

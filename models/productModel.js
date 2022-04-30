@@ -33,6 +33,11 @@ const productSchema = new mongoose.Schema({
         type:Number,
         required:false,
         default:0,
+    },
+    votes:{
+        type:Array,
+        required:false,
+        default:[]
     }
 },{timestamps:true})
 

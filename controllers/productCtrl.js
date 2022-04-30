@@ -15,10 +15,30 @@ class APIfeatures {
     constructor(query, queryString){
         this.query = query;
         this.queryString = queryString;
+        this.queryArray = []
     }
     filtering(){
         const queryObj = {...this.queryString} //queryString = req.query
-
+        console.log(queryObj['name'])
+        let queryArray = []
+        for(let item of Object.keys(queryObj)){
+            let String= '';
+            switch (item) {
+                case 'page' || 'limit':
+                    String = item + '=' + queryObj[item]
+                    queryArray.push(String)
+                    break;
+                case 'name':
+                    for(let keyOfItem of Object.keys(queryObj[item])){
+                        String = `${item}[${keyOfItem}]=${queryObj[item][keyOfItem]}`
+                        queryArray.push(String)
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        this.queryArray = queryArray
         const excludedFields = ['page','sort','limit']
         excludedFields.forEach(el=>delete(queryObj[el]))
 
@@ -32,7 +52,7 @@ class APIfeatures {
         //    gt = greater than
 
         this.query.find(JSON.parse(queryStr))
-
+        // this.queryString = queryObj.
         return this
     }
     sorting(){
@@ -69,6 +89,16 @@ const productCtrl = {
             // const products = await featureHavePaginate.query
             // const totalProduct = await features.query
             const result = await Promise.all([featureHavePaginate.query,features.query])
+            console.log("Query String",features.queryArray)
+            let url_query='';
+            features.queryArray.forEach((item)=>{
+                if(url_query.length!==0){
+                    url_query = url_query + '&' + item
+                }else{
+                    url_query = url_query + item
+                }
+            })
+            console.log(url_query)
             const products = result[0]
             if(products.length < limit){
                 const totalPage = Number(page)
@@ -76,7 +106,8 @@ const productCtrl = {
                     status: 'success',
                     result: products.length,
                     products: products,
-                    totalPage
+                    totalPage,
+                    url_query
                 })
             }
             else{
@@ -91,7 +122,8 @@ const productCtrl = {
                     status: 'success',
                     result: products.length,
                     products: products,
-                    totalPage
+                    totalPage,
+                    url_query
                 })
             }
             
@@ -253,6 +285,43 @@ const productCtrl = {
             return res.status(200).json(newProduct)
         } catch (err) {
             return res.status(500).json({msg:err.message})
+        }
+    },
+    updateVotes: async(req,res)=>{
+        try {
+            const productId = req.params.id;
+            const {id:userId} = req.user;
+            const score = req.body.score;
+            const user = await Users.findById(userId).select("-password");
+            const {name:username} = user;
+            const productRaw = await Products.findById(productId)
+            if(!productRaw.votes){
+                var {votes:votesInfo,...info} = await Products.findByIdAndUpdate(productId,{
+                    votes:[]
+                },{new:true})
+            }
+            else{
+                var {votes:votesInfo,...info} = productRaw;
+            }
+            // console.log(productRaw)
+            // console.log(votesInfo)
+            const userVoted = votesInfo.findIndex((item)=>item.userId === userId)
+            if(userVoted!==-1){
+                votesInfo[userVoted] = {username,userId,score}
+                const votesNew = [...votesInfo]
+                const newProduct = await Products.findByIdAndUpdate(productId,{
+                    votes:votesNew
+                },{new:true})
+                return res.status(200).json({msg:"Bạn đã re-vote thành công ! Cảm ơn bạn đã tham gia đánh giá"})
+            }else{
+                const votesNew = [...votesInfo,{username,userId,score}]
+                const newProduct = await Products.findByIdAndUpdate(productId,{
+                    votes:votesNew
+                },{new:true})
+                return res.status(200).json({msg:"Bạn đã vote thành công ! Cảm ơn bạn đã tham gia đánh giá"})
+            }
+        } catch (error) {
+            res.status(500).json({msg:error.message})
         }
     },
 }

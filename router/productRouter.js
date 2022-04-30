@@ -16,6 +16,9 @@ router.route("/product/:id")
 router.route("/product/:id/views")
     .put(productCtrl.increaseViews)
 
+router.route("/product/:id/votes")
+    .put(auth,productCtrl.updateVotes)
+
 
 router.route("/product/:id/comment")
     .get(productCtrl.getComments)
