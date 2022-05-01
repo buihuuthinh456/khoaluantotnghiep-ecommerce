@@ -1,6 +1,7 @@
 const Users = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { deleteProduct } = require('./productCtrl');
 
 const userCtrl = {
     register:async(req,res)=>{
@@ -71,7 +72,7 @@ const userCtrl = {
     },
     addProductIntoCart: async(req,res)=>{
         try {
-            const {userId} = req.params
+            const {id:userId} = req.user
             const {item} = req.body
             const user = await Users.findOne({_id:userId}).select('-password');
             if(user){
@@ -111,6 +112,29 @@ const userCtrl = {
             console.log(error.message)
             return res.status(500).json({msg:error.message})
         }
+    },
+    deleteProductInCart:async(req,res)=>{
+        try {
+            const {id:userId} = req.user
+            const {productId} = req.body
+            const user = await Users.findOne({_id:userId}).select('-password');
+            if(user){
+                let {cart} = user
+                // Find item
+                const newCart = cart.filter((el,index)=>{
+                    return el._id !== productId
+                })
+                const newUser = await Users.findOneAndUpdate({_id:userId},{cart:newCart},{
+                    new:true,
+                }).select('-password')
+                return res.status(200).json(newUser)
+            }else{
+                return res.status(400).json('User does not exists')
+            }
+        } catch (error) {
+           return res.status(500).json({msg:error.message}) 
+        }
+
     }
 }
 

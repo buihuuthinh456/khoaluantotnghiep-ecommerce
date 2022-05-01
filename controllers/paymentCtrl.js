@@ -13,18 +13,20 @@ const paymentCtrl = {
     },
     createPayment: async (req,res)=>{
         const _id = req.user.id
-        // const {cart} = req.body
+        // const {cart,address} = req.body
         const cart = [
             {
                 id:1,
                 name:"222"
             }
         ]
+        const address = "xã Tân Mỹ , huyện Lấp Vò, tỉnh Đồng Tháp"
 
 
         const data = {
             userId:_id,
-            cart:cart
+            cart:cart,
+            address:address
         }
         const dataString = JSON.stringify(data)
         const partnerCode = process.env.PARTNER_CODE;
@@ -120,19 +122,60 @@ const paymentCtrl = {
                 // Lưu dữ liệu vào Database
                 const newOrder = new Order(objReturn)
                 await newOrder.save();
-                console.log('Thanh toán thành công')
+                // console.log('Thanh toán thành công')
                 return res.status(200).json(objReturn)
             }
             else{
-                console.log('Đúng chữ ký nhưng có vẻ gì đó sai sai')
+                // console.log('Đúng chữ ký nhưng có vẻ gì đó sai sai')
                 return res.status(400).json("Sai sai")
             }
         }
         else{
-                console.log('Thất bại hoàn toàn')
+                // console.log('Thất bại hoàn toàn')
                 return res.status(400).json("Sai hoàn toàn")
         }
     },
+    createOrderCash:async(req,res)=>{
+        const {amount,cart,address} = req.body
+        const {id:_id} = req.user
+        // Extradata sẽ bao gồm {userId, cart, address}
+        const extraData = {
+            userId:_id,
+            cart,
+            address
+        }
+        const orderId = "CASH" +Math.floor(Math.random() * Math.pow(10,6)) + new Date().getTime()
+        const orderInfo = "pay with cash"
+        const requestId = orderId
+        const orderType = "direct payment"
+        const transId = Math.floor(Math.random() * Math.pow(10,8));
+        const objectReturn = {
+            amount,
+            extraData,
+            orderId,
+            orderInfo,
+            orderType,
+            requestId,
+            transId
+        }
+
+        const newOrder = new Order(objectReturn)
+        await newOrder.save();
+        return res.status(200).json(objectReturn)
+    },
+    updateStatusTrans:async(req,res)=>{
+       try {
+            const {_id,stateTrans} = req.body;
+            const newOrder = await Order.findByIdAndUpdate(_id,{
+                stateTrans
+            },{new:true});
+            
+            return res.status(200).json(newOrder)
+       } catch (error) {
+           return res.status(500).json({msg:error.message})
+       }
+        
+    }
 }
 
 module.exports = paymentCtrl;

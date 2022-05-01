@@ -28,6 +28,11 @@ const orderSchema = new mongoose.Schema({
     extraData:{
         type:Object,
         required:true,
+    },
+    stateTrans:{
+        type:Boolean,
+        required:false,
+        default:false
     }
 },{timestamps:true})
 
