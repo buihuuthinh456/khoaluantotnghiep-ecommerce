@@ -73,14 +73,17 @@ const userCtrl = {
     addProductIntoCart: async(req,res)=>{
         try {
             const userId = req.user.id
-            const {item} = req.body
+            console.log(userId)
+            const item = req.body
+            console.log(item)
             const user = await Users.findOne({_id:userId}).select('-password');
+            console.log(user)
             if(user){
                 let {cart} = user
                 cart = [...cart,item]
                 // Check những item trùng trong cart để cộng dồn
                 const newCart = cart.reduce((previousValue,currentValue)=>{
-                    if(previousValue.length!==0){
+                    if(previousValue.length!==0 && currentValue){
                         let index = previousValue.findIndex(data => data._id === currentValue._id);
                         if(index!==-1){
                             if(previousValue[index]["quantity"] + currentValue["quantity"]>0){

@@ -16,9 +16,6 @@ const homeCtrl = {
                 newProduct: result[2],
                 categories:result[3]
             }
-
-            console.log(response)
-
             return res.status(200).json(response)
         } catch (err) {
             return res.status(500).json({msg:err.message})
