@@ -72,7 +72,7 @@ const userCtrl = {
     },
     addProductIntoCart: async(req,res)=>{
         try {
-            const {id:userId} = req.user
+            const userId = req.user.id
             const {item} = req.body
             const user = await Users.findOne({_id:userId}).select('-password');
             if(user){
