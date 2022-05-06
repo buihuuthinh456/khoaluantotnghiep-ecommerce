@@ -13,14 +13,14 @@ const paymentCtrl = {
     },
     createPayment: async (req,res)=>{
         const _id = req.user.id
-        // const {cart,address} = req.body
-        const cart = [
-            {
-                id:1,
-                name:"222"
-            }
-        ]
-        const address = "xã Tân Mỹ , huyện Lấp Vò, tỉnh Đồng Tháp"
+        const {cart,address} = req.body
+        // const cart = [
+        //     {
+        //         id:1,
+        //         name:"222"
+        //     }
+        // ]
+        // const address = "xã Tân Mỹ , huyện Lấp Vò, tỉnh Đồng Tháp"
 
 
         const data = {
