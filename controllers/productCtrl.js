@@ -108,7 +108,6 @@ const productCtrl = {
             })
             console.log(url_query)
             const products = result[0]
-            console.log(products)
             if(products.length < limit){
                 const totalPage = Number(page)
                 return res.status(200).json({
