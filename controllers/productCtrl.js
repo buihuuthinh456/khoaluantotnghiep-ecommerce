@@ -61,11 +61,7 @@ class APIfeatures {
             }
         }
         // console.log(queryObject)
-        
-        
-
         this.query.find(queryObject)
-        console.log(this.query.find(queryObject))
         // this.queryString = queryObj.
         return this
     }
@@ -89,8 +85,6 @@ class APIfeatures {
 
     }
 }
-
-
 const productCtrl = {
     getProducts: async(req,res)=>{
         try {
@@ -114,6 +108,7 @@ const productCtrl = {
             })
             console.log(url_query)
             const products = result[0]
+            console.log(products)
             if(products.length < limit){
                 const totalPage = Number(page)
                 return res.status(200).json({
