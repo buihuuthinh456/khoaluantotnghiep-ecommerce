@@ -43,15 +43,28 @@ class APIfeatures {
         excludedFields.forEach(el=>delete(queryObj[el]))
 
         let queryStr = JSON.stringify(queryObj)
-
-        queryStr = queryStr.replace(/\b(gte|gt|lt|lte|regex)\b/g, match => '$' + match)
+        queryStr = queryStr.replace(/\b(gte|gt|lt|lte|regex)\b/g, match =>{return '$' + match}) 
 
         //    gte = greater than or equal
         //    lte = lesser than or equal
         //    lt = lesser than
         //    gt = greater than
+        
+        let queryObject = JSON.parse(queryStr)
+        for(let key in queryObject){
+            if(key === 'name'){
+                for(let keyItem in queryObject[key]){
+                    let regex = new RegExp(queryObject[key][keyItem],"i")
+                    queryObject[key][keyItem] = regex
+                    // console.log('regex',queryObject[key][keyItem])
+                }
+            }
+        }
+        // console.log(queryObject)
+        
+        
 
-        this.query.find(JSON.parse(queryStr))
+        this.query.find(queryObject)
         // this.queryString = queryObj.
         return this
     }

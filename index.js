@@ -27,9 +27,7 @@ app.use('/api',categoryRouter);
 app.use('/api',productRouter);
 app.use('/api',uploadRouter);
 app.use('/api',paymentRouter);
-
 app.use('/page',pageCategoryRouter);
-
 // Connect to MongoDB
 const URI = process.env.MONGODB_URL;
 const PORT = process.env.PORT || 5000;
