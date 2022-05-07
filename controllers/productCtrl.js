@@ -49,7 +49,7 @@ class APIfeatures {
         //    lte = lesser than or equal
         //    lt = lesser than
         //    gt = greater than
-        
+
         let queryObject = JSON.parse(queryStr)
         for(let key in queryObject){
             if(key === 'name'){
@@ -65,6 +65,7 @@ class APIfeatures {
         
 
         this.query.find(queryObject)
+        console.log(this.query.find(queryObject))
         // this.queryString = queryObj.
         return this
     }
