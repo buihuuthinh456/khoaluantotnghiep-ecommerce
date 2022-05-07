@@ -1,4 +1,5 @@
 const Order = require('../models/oderModel');
+const User = require('../models/userModel')
 const {Base64} = require('js-base64');
 const crypto = require('crypto');
 
@@ -123,6 +124,9 @@ const paymentCtrl = {
                 const newOrder = new Order(objReturn)
                 await newOrder.save();
                 // console.log('Thanh toán thành công')
+
+                const {userId} = JSON.parse(dataString)
+                await User.findByIdAndUpdate(userId,{cart:[]})
                 return res.status(200).json(objReturn)
             }
             else{
@@ -161,6 +165,7 @@ const paymentCtrl = {
 
         const newOrder = new Order(objectReturn)
         await newOrder.save();
+        await User.findByIdAndUpdate(extraData.userId,{cart:[]})
         return res.status(200).json(objectReturn)
     },
     updateStatusTrans:async(req,res)=>{
