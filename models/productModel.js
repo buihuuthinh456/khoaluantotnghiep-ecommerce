@@ -29,6 +29,10 @@ const productSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
+    moreInfo:{
+        type:Array,
+        default:[]
+    },
     views:{
         type:Number,
         required:false,
