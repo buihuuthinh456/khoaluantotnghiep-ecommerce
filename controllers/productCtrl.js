@@ -301,6 +301,8 @@ const productCtrl = {
             const productId = req.params.id;
             const {id:userId} = req.user;
             const score = req.body.score;
+            if(typeof score !== 'number') 
+            return res.status(400).json({msg:"Không đúng định dạng dữ liệu score phải là số thực"})
             const user = await Users.findById(userId).select("-password");
             const {name:username} = user;
             const productRaw = await Products.findById(productId)
@@ -321,13 +323,13 @@ const productCtrl = {
                 const newProduct = await Products.findByIdAndUpdate(productId,{
                     votes:votesNew
                 },{new:true})
-                return res.status(200).json({msg:"Bạn đã re-vote thành công ! Cảm ơn bạn đã tham gia đánh giá"})
+                return res.status(200).json({msg:"Bạn đã re-vote thành công ! Cảm ơn bạn đã tham gia đánh giá",data:newProduct})
             }else{
                 const votesNew = [...votesInfo,{username,userId,score}]
                 const newProduct = await Products.findByIdAndUpdate(productId,{
                     votes:votesNew
                 },{new:true})
-                return res.status(200).json({msg:"Bạn đã vote thành công ! Cảm ơn bạn đã tham gia đánh giá"})
+                return res.status(200).json({msg:"Bạn đã vote thành công ! Cảm ơn bạn đã tham gia đánh giá",data:newProduct})
             }
         } catch (error) {
             res.status(500).json({msg:error.message})
