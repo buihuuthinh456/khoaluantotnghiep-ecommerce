@@ -20,6 +20,7 @@ const uploadRouter = require('./router/upImagesProduct');
 const homeRouter = require('./router/homeRouter');
 const pageCategoryRouter = require('./router/pageCategoryRouter');
 const paymentRouter = require('./router/paymentRouter');
+const topicImgRouter = require('./router/topicImgRouter');
 
 app.use('/',homeRouter);
 app.use('/user',userRouter);
@@ -27,6 +28,7 @@ app.use('/api',categoryRouter);
 app.use('/api',productRouter);
 app.use('/api',uploadRouter);
 app.use('/api',paymentRouter);
+app.use('/api',topicImgRouter);
 app.use('/page',pageCategoryRouter);
 // Connect to MongoDB
 const URI = process.env.MONGODB_URL;
