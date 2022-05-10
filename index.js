@@ -1,5 +1,5 @@
 require('dotenv').config();
-
+const {Base64} = require('js-base64');
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
