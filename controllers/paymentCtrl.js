@@ -163,10 +163,19 @@ const paymentCtrl = {
             transId
         }
 
+        const extraDataString = Base64.encode(JSON.stringify(extraData))
+        const url_return = 'http://localhost:3000/successful'
+        const payment_Url = `${url_return}?amount=${amount}`
+                                        +`&orderId=${orderId}`
+                                        +`&orderInfo=${orderInfo}`
+                                        +`&orderType=${orderType}`
+                                        +`&requestId=${requestId}`
+                                        +`&transId=${transId}`
+                                        +`&extraData=${extraDataString}`
         const newOrder = new Order(objectReturn)
         await newOrder.save();
         await User.findByIdAndUpdate(extraData.userId,{cart:[]})
-        return res.status(200).json(objectReturn)
+        return res.status(200).json({data:objectReturn, payment_Url:payment_Url})
     },
     updateStatusTrans:async(req,res)=>{
        try {
