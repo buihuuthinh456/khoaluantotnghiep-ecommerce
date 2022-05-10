@@ -162,7 +162,7 @@ const paymentCtrl = {
             requestId,
             transId
         }
-        const extraDataString = Base64.btoa(JSON.stringify(extraData))
+        const extraDataString = Base64.encode(JSON.stringify(extraData))
         const url_return = 'http://localhost:3000/successful'
         const payment_Url = `${url_return}?amount=${amount}`
                                         +`&orderId=${orderId}`
