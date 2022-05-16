@@ -6,10 +6,19 @@ const crypto = require('crypto');
 const paymentCtrl = {
     getOrders: async(req,res)=>{
         try {
-            const order = await Order.find();
-            res.json(order)
+            const orders = await Order.find();
+            return res.status(200).json(orders)
         } catch (err) {
             return res.status(500).json({msg:err.message})
+        }
+    },
+    getHistoryPayment:async(req,res)=>{
+        try {
+            const userId = req.user.id
+            const orders = await Order.find({userId})
+            return res.status(200).json(orders)
+        } catch (error) {
+            return res.status(500).json({msg:error.message})
         }
     },
     createPayment: async (req,res)=>{
@@ -98,6 +107,7 @@ const paymentCtrl = {
     createOrder: async(req,res)=>{
         const {amount,responseTime,message,extraData,orderId,orderInfo,requestId,signature,resultCode,orderType,payType,transId} = req.body
         const dataString = Base64.decode(req.body.extraData)
+        const {userId}=JSON.parse(dataString)
         const objReturn = {
             amount,
             requestId,
@@ -105,7 +115,8 @@ const paymentCtrl = {
             orderInfo,
             orderType,
             transId,
-            extraData:JSON.parse(dataString)
+            extraData:JSON.parse(dataString),
+            userId
         }
         // console.log(objReturn)
         const partnerCode = process.env.PARTNER_CODE;
@@ -160,7 +171,8 @@ const paymentCtrl = {
             orderInfo,
             orderType,
             requestId,
-            transId
+            transId,
+            userId:_id
         }
         const extraDataString = Base64.encodeURI(JSON.stringify(extraData))
         const url_return = 'http://localhost:3000/successful'

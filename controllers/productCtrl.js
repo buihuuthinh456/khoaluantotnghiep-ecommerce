@@ -1,6 +1,7 @@
 const Products = require('../models/productModel');
 const Comments = require('../models/commentModel');
 const Users = require('../models/userModel');
+const { emit } = require('../models/productModel');
 const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
@@ -335,5 +336,54 @@ const productCtrl = {
             res.status(500).json({msg:error.message})
         }
     },
+
+    addMoreInfo: async(req,res)=>{
+        try {
+            const productId = req.params.id;
+            const {moreInfoData} = req.body
+            moreInfoData._id ="ID" + new Date().getTime() + Math.floor(Math.random() * Math.pow(10,6))
+            const product = await Products.findById(productId)
+            if(!product) return res.status(400).json({msg:"Product doesn't exist"})
+            const {moreInfo} = product;
+            product.moreInfo = [...moreInfo,moreInfoData]
+            const newProduct = new Products(product)
+            await newProduct.save()
+            return res.status(200).json(newProduct)
+        } catch (error) {
+            return res.status(500).json({msg:error.message})
+        }
+    },
+    updateMoreInfo:async(req,res)=>{
+        try {
+            const productId = req.params.id;
+            const {moreInfoDataUpdate} = req.body
+            const product = await Products.findById(productId)
+            const {moreInfo} = product;
+            const indexOfUpdate = moreInfo.findIndex((el)=>el._id===moreInfoDataUpdate._id)
+            if(indexOfUpdate===-1) return res.status(400).json({msg:"This info doesn't exist"})
+            moreInfo[indexOfUpdate] = moreInfoDataUpdate
+            product.moreInfo = moreInfo
+            const newProduct = new Products(product)
+            await newProduct.save()
+            return res.status(200).json(newProduct)
+        } catch (error) {
+            return res.status(500).json({msg:error.message})
+        }
+    },
+    deleteMoreInfo:async(req,res)=>{
+        try {
+            const productId = req.params.id;
+            const {moreInfoDataUpdate} = req.body
+            const product = await Products.findById(productId)
+            const {moreInfo} = product;
+            const moreInfoUpdate = moreInfo.filter((el)=>el._id!==moreInfoDataUpdate._id)
+            product.moreInfo = moreInfoUpdate
+            const newProduct = new Products(product)
+            await newProduct.save()
+            return res.status(200).json(newProduct)
+        } catch (error) {
+            return res.status(500).json({msg:error.message})
+        }
+    }
 }
 module.exports = productCtrl;

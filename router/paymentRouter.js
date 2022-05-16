@@ -10,6 +10,8 @@ router.route('/payment/ipn')
         .post(paymentCtrl.createOrder)
 router.route('/payment/cash')
         .post(auth,paymentCtrl.createOrderCash)
+router.route('/payment/history')
+        .get(auth,paymentCtrl.getHistoryPayment)
 router.post('/payment/create-payment',auth,paymentCtrl.createPayment)
 
 

@@ -15,10 +15,12 @@ router.route("/product/:id")
     .get(productCtrl.getProduct)
 router.route("/product/:id/views")
     .put(productCtrl.increaseViews)
-
+router.route("/product/:id/more")
+    .post(auth,authAdmin,productCtrl.addMoreInfo)
+    .put(auth,authAdmin,productCtrl.updateMoreInfo)
+    .delete(auth,authAdmin,productCtrl.deleteMoreInfo)
 router.route("/product/:id/votes")
     .put(auth,productCtrl.updateVotes)
-
 
 router.route("/product/:id/comment")
     .get(productCtrl.getComments)
