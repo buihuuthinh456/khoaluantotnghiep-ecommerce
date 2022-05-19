@@ -2,7 +2,24 @@ const Products = require('../models/productModel');
 const Categories = require('../models/categoryModel');
 const AnalysisData = require('../models/analysisDataModel');
 const requestIp = require('request-ip');
+const moment = require('moment');
 
+class APIfeatures {
+    constructor(query, queryString){
+        this.query = query
+        this.queryString = queryString
+    }
+
+    filtering(){
+        const queryObj = {...this.queryString}
+        if(queryObj.dateStart&&queryObj.dateEnd){
+            const dateStart = moment(queryObj.dateStart).format("YYYY-MM-DD")
+            const dateEnd = moment(queryObj.dateEnd).format("YYYY-MM-DD")
+            this.query.find({time:{"$gte":dateStart,"$lte":dateEnd}})
+        }
+        return this
+    }
+}
 
 const homeCtrl = {
     getHome: async(req,res)=>{
@@ -27,13 +44,10 @@ const homeCtrl = {
     },
     postDataAccess: async(req,res)=>{
         try {
-            const day = new Date().getDay()
-            const month = new Date().getMonth()
-            const year = new Date().getFullYear()
             const userId = req.body.userId || requestIp.getClientIp(req)
-            const timeStructure = `${day}/${month}/${year}`
-            let regex = new RegExp(`${day}\S*`)
-            const data = await AnalysisData.findOne({time:{$regex:regex}})
+            let timeStructure = moment(new Date()).format("YYYY-MM-DD");
+            console.log(timeStructure)
+            const data = await AnalysisData.findOne({time:{$regex:timeStructure}})
             if(data){
                 console.log("IP just access ",userId)
                 const users = data.users
@@ -65,7 +79,8 @@ const homeCtrl = {
 
     getDataAccess:async(req,res)=>{
         try {
-            const Data = await AnalysisData.find()
+            const features = new APIfeatures(AnalysisData.find(),req.query).filtering()
+            const Data = await features.query.sort("time")
             return res.status(200).json(Data)
         } catch (error) {
             return res.status(500).json({msg:error.message})

@@ -20,7 +20,7 @@ class APIfeatures {
     }
     filtering(){
         const queryObj = {...this.queryString} //queryString = req.query
-        console.log(queryObj['name'])
+        // console.log(queryObj['name'])
         let queryArray = []
         for(let item of Object.keys(queryObj)){
             let String= '';
@@ -61,7 +61,7 @@ class APIfeatures {
                 }
             }
         }
-        // console.log(queryObject)
+        console.log("query",queryObject)
         this.query.find(queryObject)
         // this.queryString = queryObj.
         return this
