@@ -1,4 +1,5 @@
 const Categories = require('../models/categoryModel');
+const Products = require('../models/productModel');
 
 const categoryCtrl = {
     getCategories: async(req,res)=>{
@@ -33,7 +34,14 @@ const categoryCtrl = {
     updateCategory: async(req,res)=>{
       try {
           const {name} = req.body;
-          await Categories.findByIdAndUpdate({_id:req.params.id},{name})
+
+          const oldCategory = await Categories.findById({_id:req.params.id})
+          const newCategory = await Categories.findByIdAndUpdate({_id:req.params.id},{name})
+          console.log(newCategory)
+          const oldCategoryName = oldCategory.name
+          console.log()
+          const resUpdateProducts = await Products.updateMany({category:oldCategoryName},{$set:{"category": name}})
+          console.log(resUpdateProducts)
           return res.json({msg:"Update Successfull"})
       } catch (err) {
           return res.status(500).json({msg:err.message})
