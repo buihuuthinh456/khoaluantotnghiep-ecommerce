@@ -1,4 +1,5 @@
 const Users = require('../models/userModel');
+const Products = require('../models/productModel')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { deleteProduct } = require('./productCtrl');
@@ -74,8 +75,8 @@ const userCtrl = {
         try {
             const userId = req.user.id
             console.log(userId)
-            const item = req.body
-            console.log(item)
+            const itemRaw = req.body
+            const item = await Products.findOne({_id:itemRaw._id})
             const user = await Users.findOne({_id:userId}).select('-password');
             console.log(user)
             if(user){
