@@ -1,6 +1,7 @@
 const Products = require('../models/productModel');
 const Categories = require('../models/categoryModel');
 const AnalysisData = require('../models/analysisDataModel');
+const Orders = require('../models/oderModel');
 const requestIp = require('request-ip');
 const moment = require('moment');
 
@@ -81,7 +82,22 @@ const homeCtrl = {
         try {
             const features = new APIfeatures(AnalysisData.find(),req.query).filtering()
             const Data = await features.query.sort("time")
-            return res.status(200).json(Data)
+
+
+            const dateStart = moment(req.query.dateStart).format("YYYY-MM-DD")
+            const dateEnd = moment(req.query.dateEnd).format("YYYY-MM-DD")
+
+            const paymentData = await Orders.find({
+                createdAt:{
+                    $gte:dateStart,$lte:dateEnd
+                }
+            })
+
+            const result = {
+                accessData: Data,
+                paymentData: paymentData
+            }
+            return res.status(200).json(result)
         } catch (error) {
             return res.status(500).json({msg:error.message})
         }
