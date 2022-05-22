@@ -9,9 +9,9 @@ const userCtrl = {
             const {name,email,password} = req.body;
             const user = await Users.findOne({email});
 
-            if(user) return res.status(400).json({msg:"The email already exists"});
+            if(user) return res.status(400).json({msg:"Email này đã có người sử dụng"});
             
-            if(password.length < 6) return res.status(400).json({msg:"Password is at least 6 characters"});
+            if(password.length < 6) return res.status(400).json({msg:"Mật khẩu ít nhất phải có 6 ký tự"});
 
             // Password Encrytion
 
@@ -26,7 +26,7 @@ const userCtrl = {
             await newUser.save();
 
 
-            res.json("Register Successfull")
+            res.json("Đăng ký thành công")
 
         } catch (err) {
             res.status(500).json({msg:err})
@@ -37,10 +37,10 @@ const userCtrl = {
             const {email,password} = req.body;
 
             const user = await Users.findOne({email});
-            if(!user) return res.status(400).json({msg:"User does not exist"});
+            if(!user) return res.status(400).json({msg:"Tài khoản này không tồn tại"});
 
             const isMatch = await bcrypt.compare(password,user.password);
-            if(!isMatch) return res.status(400).json({msg:"Password is Wrong"});
+            if(!isMatch) return res.status(400).json({msg:"Bạn đã sai mật khẩu"});
 
             // If login success is create Token
 
@@ -132,7 +132,7 @@ const userCtrl = {
                 }).select('-password')
                 return res.status(200).json(newUser)
             }else{
-                return res.status(400).json('User does not exists')
+                return res.status(400).json('Người dùng không tồn tại')
             }
         } catch (error) {
            return res.status(500).json({msg:error.message}) 

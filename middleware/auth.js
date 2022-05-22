@@ -8,7 +8,7 @@ const auth = (req,res,next) => {
         jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(err,user)=>{
             if(err){
                 if(err.message==='jwt expired'){
-                    return res.status(400).json({msg:"Invalid Authetication",errorExpiredAt:true});
+                    return res.status(400).json({msg:"Phiên đăng nhập đã hết hạn, mời bạn đăng nhập lại",errorExpiredAt:true});
                 }
                 else{
                     return res.status(400).json({msg:"Invalid Authetication"});
