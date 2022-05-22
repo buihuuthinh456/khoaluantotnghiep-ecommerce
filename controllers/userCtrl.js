@@ -74,11 +74,8 @@ const userCtrl = {
     addProductIntoCart: async(req,res)=>{
         try {
             const userId = req.user.id
-            console.log(userId)
-            const itemRaw = req.body
-            const item = await Products.findOne({_id:itemRaw._id})
+            const item = req.body
             const user = await Users.findOne({_id:userId}).select('-password');
-            console.log(user)
             if(user){
                 let {cart} = user
                 cart = [...cart,item]
@@ -88,7 +85,8 @@ const userCtrl = {
                         let index = previousValue.findIndex(data => data._id === currentValue._id);
                         if(index!==-1){
                             if(previousValue[index]["quantity"] + currentValue["quantity"]>0){
-                                previousValue[index]["quantity"] = previousValue[index]["quantity"] + currentValue["quantity"]
+                                previousValue[index]["quantity"] = currentValue["quantity"] 
+                                // + previousValue[index]["quantity"] 
                                 return [...previousValue] 
                             }else{
                                 [previousValue[index],...value] = previousValue
@@ -109,11 +107,30 @@ const userCtrl = {
                 }).select('-password')
                 return res.status(200).json(newUser)
             }else{
-                return res.status(400).json('User does not exists')
+                return res.status(400).json('Người dùng không tồn tại')
             }
             
         } catch (error) {
-            console.log(error.message)
+            return res.status(500).json({msg:error.message})
+        }
+    },
+    newCart: async(req,res)=>{
+        try {
+            const userId = req.user.id
+            const cart = req.body
+            const user = await Users.findOne({_id:userId}).select('-password');
+            if(user){
+                const newUser = await Users.findOneAndUpdate({_id:userId},{cart:cart},{
+                    new:true,
+                }).select('-password')
+                return res.status(200).json(newUser)
+
+            }
+            else{
+                return res.status(400).json('Người dùng không tồn tại')
+            }
+            
+        } catch (error) {
             return res.status(500).json({msg:error.message})
         }
     },

@@ -47,7 +47,6 @@ const homeCtrl = {
         try {
             const userId = req.body.userId || requestIp.getClientIp(req)
             let timeStructure = moment(new Date()).format("YYYY-MM-DD");
-            console.log(timeStructure)
             const data = await AnalysisData.findOne({time:{$regex:timeStructure}})
             if(data){
                 console.log("IP just access ",userId)

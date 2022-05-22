@@ -7,6 +7,7 @@ const authAdmin = require('../middleware/authAdmin')
 router.post('/register',userCtrl.register);
 router.post('/login',userCtrl.login);
 router.route('/cart')
+        .post(auth,userCtrl.newCart)
         .put(auth,userCtrl.addProductIntoCart)
         .delete(auth,userCtrl.deleteProductInCart)
 router.get('/infor',auth,userCtrl.getUser);

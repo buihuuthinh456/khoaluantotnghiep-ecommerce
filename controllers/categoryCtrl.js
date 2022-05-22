@@ -5,7 +5,7 @@ const categoryCtrl = {
     getCategories: async(req,res)=>{
         try {
             const categories = await Categories.find();
-            res.json(categories)
+            return res.status(200).json(categories)
         } catch (err) {
             return res.status(500).json({msg:err.message})
         }
@@ -37,11 +37,8 @@ const categoryCtrl = {
 
           const oldCategory = await Categories.findById({_id:req.params.id})
           const newCategory = await Categories.findByIdAndUpdate({_id:req.params.id},{name})
-          console.log(newCategory)
           const oldCategoryName = oldCategory.name
-          console.log()
           const resUpdateProducts = await Products.updateMany({category:oldCategoryName},{$set:{"category": name}})
-          console.log(resUpdateProducts)
           return res.json({msg:"Update Successfull"})
       } catch (err) {
           return res.status(500).json({msg:err.message})
