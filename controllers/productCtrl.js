@@ -1,7 +1,6 @@
 const Products = require('../models/productModel');
 const Comments = require('../models/commentModel');
 const Users = require('../models/userModel');
-const { emit } = require('../models/productModel');
 const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
@@ -150,7 +149,7 @@ const productCtrl = {
             const productId = req.params.id;
             const product = await Products.findById(productId)
 
-            if(!product) return res.status(400).json({msg:"Product doesn't exist"})
+            if(!product) return res.status(400).json({msg:"Sản phẩm này không tồn tại"})
             res.status(200).json(product)
         } catch (err) {
             return res.status(500).json({msg:err.message})
@@ -160,7 +159,7 @@ const productCtrl = {
         try {
             const productId = req.body.id;
             const product = await Products.findById(productId)
-            if(!product) return res.status(400).json({msg:"Product doesn't exist"})
+            if(!product) return res.status(400).json({msg:"Sản phẩm này không tồn tại"})
             res.status(200).json(product)
         } catch (err) {
             return res.status(500).json({msg:err.message})
@@ -172,9 +171,9 @@ const productCtrl = {
             
             const product = await Products.findOne({productId})
 
-            if(product) return res.status(400).json({msg:"Product already exists"})
+            if(product) return res.status(400).json({msg:"Sản phẩm này đã bị trùng lặp ID"})
 
-            if(!images) return res.status(400).json({msg:"No images upload"})
+            if(!images) return res.status(400).json({msg:"Chưa tải ảnh lên"})
 
             const newProduct = new Products({
                 productId,name,images:images,category,price,description,quantity
@@ -182,7 +181,7 @@ const productCtrl = {
 
             await newProduct.save()
 
-            return res.status(200).json({msg:"Create successfully a product"})
+            return res.status(200).json({msg:"Tạo thành công sản phẩm"})
 
 
 
@@ -204,7 +203,7 @@ const productCtrl = {
 
             await Products.deleteOne({_id:productId})
 
-            return res.status(200).json({msg:"Delete successfully this product"})
+            return res.status(200).json({msg:"Đã xóa sản phẩm thành công"})
        } catch (err) {
            return res.status(500).json({msg:err.message})
        }
@@ -213,13 +212,13 @@ const productCtrl = {
         try {
             const productId = req.params.id;
             const {name,description,price,quantity,category,images} = req.body;
-            if(!images) return res.status(400).json({msg:"No images upload"})
+            if(!images) return res.status(400).json({msg:"Chưa tải ảnh lên"})
 
             await Products.findOneAndUpdate({_id:productId},{
                 name,description,images:images,price,quantity,category
             })
 
-            return res.status(200).json({msg:"Product update successfully"})
+            return res.status(200).json({msg:"Đã cập nhật sản phẩm thành công"})
 
 
         } catch (err) {
@@ -258,13 +257,13 @@ const productCtrl = {
             const productId = req.params.id;
             const commentId = req.params.idComment;
             const {userId,content}=req.body;
-            if(content.length===0) return res.status(400).json({msg:"Comment is empty?"})
+            if(content.length===0) return res.status(400).json({msg:"Không thể để bình luận trống?"})
                
             await Comments.findByIdAndUpdate({_id:commentId,userId:userId},{
                 productId,userId,content
             })
 
-            return res.status(400).json({msg:"Comment is updated"});
+            return res.status(400).json({msg:"Bình luận đã được cập nhật"});
         } catch (err) {
             return res.status(500).json({msg:err.message})
         }
@@ -275,7 +274,7 @@ const productCtrl = {
             const {userId}=req.body;
         
             await Comments.findByIdAndDelete({_id:commentId,userId:userId})
-            return res.status(200).json({msg:"Comment is deleted"})
+            return res.status(200).json({msg:"Đã xóa bình luận"})
  
             
         } catch (err) {
@@ -346,13 +345,14 @@ const productCtrl = {
             const {moreInfoData} = req.body
             moreInfoData._id ="ID" + new Date().getTime() + Math.floor(Math.random() * Math.pow(10,6))
             const product = await Products.findById(productId)
-            if(!product) return res.status(400).json({msg:"Product doesn't exist"})
+            if(!product) return res.status(400).json({msg:"Sản phẩm này không tồn tại"})
             const {moreInfo} = product;
             product.moreInfo = [...moreInfo,moreInfoData]
             const newProduct = new Products(product)
             await newProduct.save()
             return res.status(200).json(newProduct)
         } catch (error) {
+            console.log(error)
             return res.status(500).json({msg:error.message})
         }
     },
@@ -363,7 +363,7 @@ const productCtrl = {
             const product = await Products.findById(productId)
             const {moreInfo} = product;
             const indexOfUpdate = moreInfo.findIndex((el)=>el._id===moreInfoDataUpdate._id)
-            if(indexOfUpdate===-1) return res.status(400).json({msg:"This info doesn't exist"})
+            if(indexOfUpdate===-1) return res.status(400).json({msg:"Thông tin này không tồn tại"})
             moreInfo[indexOfUpdate] = moreInfoDataUpdate
             product.moreInfo = moreInfo
             const newProduct = new Products(product)

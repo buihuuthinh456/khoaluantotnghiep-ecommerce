@@ -5,7 +5,7 @@ const authAdmin = async (req,res,next)=>{
         const user = await Users.findOne({
             _id:req.user.id
         });
-        if(user.isAdmin === false) return res.status(400).json({msg:"Admin resources access denied"});
+        if(user.isAdmin === false) return res.status(400).json({msg:"Tài nguyên này chỉ có admin mới được sử dụng"});
 
         next();
     } catch (err) {
