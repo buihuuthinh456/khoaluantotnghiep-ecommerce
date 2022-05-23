@@ -23,6 +23,11 @@ const userSchema = new mongoose.Schema({
     cart:{
         type:Array,
         default:[],
+    },
+    resetCode:{
+        type:String,
+        required:false,
+        default:""
     }
 },{timestamps:true})
 

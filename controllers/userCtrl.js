@@ -2,7 +2,9 @@ const Users = require('../models/userModel');
 const Products = require('../models/productModel')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { deleteProduct } = require('./productCtrl');
+const nodeMailer = require('nodemailer')
+const smtpTransport = require('nodemailer-smtp-transport');
+
 
 const userCtrl = {
     register:async(req,res)=>{
@@ -30,7 +32,96 @@ const userCtrl = {
             res.json("Đăng ký thành công")
 
         } catch (err) {
-            res.status(500).json({msg:err})
+            res.status(500).json({msg:err.message})
+        }
+    },
+    requestResetPassword: async(req,res)=>{
+        try {
+            const {email} = req.body;
+            const user = await Users.findOne({email});
+            if(!user) 
+                return res.status(400).json({msg:"Email này không phải thành viên của website chúng tôi"});
+            else{
+                let testAccount = await nodeMailer.createTestAccount();
+                const adminEmail = 'swordartonlinethinh@gmail.com'
+                const adminPassword = 'hpobvylpluhttrcl'
+                // Mình sử dụng host của google - gmail
+                // const mailHost = 'smtp.gmail.com'
+                // // 587 là một cổng tiêu chuẩn và phổ biến trong giao thức SMTP
+                // const mailPort = 587
+
+                const transporter = nodeMailer.createTransport(smtpTransport({
+                        // host: mailHost,
+                        // port: mailPort,
+                        service: 'gmail',
+                        secure: false, // true for 465, false for other ports
+                        auth: {
+                          user: adminEmail, // generated ethereal user
+                          pass: adminPassword, // generated ethereal password
+                        },
+                }));
+                const resetCode = await bcrypt.hash(testAccount.pass,10);
+                await Users.findOneAndUpdate({email},{resetCode});
+                console.log(resetCode)
+                const urlConfirm = `http://localhost:3000/resetPassword?resetCode=${testAccount.pass}&email=${user.email}`
+                const options = {
+                    from: adminEmail, // địa chỉ admin email bạn dùng để gửi
+                    to: user.email, // địa chỉ gửi đến
+                    subject: "Bạn đã quên mật khẩu thành viên của TShop", // Tiêu đề của mail
+                    text:`Nhấn vào link bên dưới để reset password:`,
+                    html:`<a href=${urlConfirm}>Nhấn vào đấy để đặt lại password</a>`
+                }
+
+                await transporter.sendMail(options)
+
+                return res.status(200).json({msg:"Gửi request thành công"})
+            }
+
+        } catch (error) {
+            return res.status(500).json({msg:error.message})
+        }
+    },
+    confirmResetPassword: async(req,res)=>{
+        try {
+            const {resetCode,email} = req.query
+            const {password} = req.body
+            const user = await Users.findOne({email})
+            console.log(user)
+            if(user){
+                const check = await bcrypt.compare(resetCode,user.resetCode)
+                if(check){
+                    const passwordHash = await bcrypt.hash(password,10);
+                    const user = await Users.findOneAndUpdate({email},{password:passwordHash, resetCode:""})
+                    return res.status(200).json({msg:"Thay đổi mật khẩu thành công"})
+                }
+                else{
+                    return res.status(400).json({msg:"ResetCode không hợp lệ"})
+                }
+            }else{
+                return res.status(400).json({msg:"Email này không phải là thành viên của website chúng tôi"})
+            }
+        } catch (error) {
+            return res.status(500).json({msg:error.message})
+        }
+    },
+    changePassword: async(req,res)=>{
+        try {
+            const _id = req.user.id
+            const {password, newPassword} = req.body
+            const newPasswordHash = await bcrypt.hash(newPassword,10)
+            const user = await Users.findById(_id)
+            if(!user) return res.status(400).json({msg:"Không hợp lệ"})
+            const isMatch = await bcrypt.compare(password, user.password)
+            if(isMatch){
+                await Users.findByIdAndUpdate(_id,{
+                    password:newPasswordHash
+                })
+            }else{
+                return res.status(400).json({msg:"Mật khẩu hiện tại không đúng"})
+            }
+            return res.status(200).json({msg:"Thay đổi mật khẩu thành công"})
+        } catch (error) {
+            return res.status(500).json({msg:error.message})
         }
     },
     login:async(req,res)=>{
