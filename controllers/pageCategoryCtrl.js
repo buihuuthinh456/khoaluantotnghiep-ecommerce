@@ -49,10 +49,20 @@ const pageCategoryCtrl = {
         try {
             const category = req.params.category
             const {limit,page} = req.query 
-            const features = new APIfeatures(Products.find({category:category}),req.query)
-            .filtering()
-            const featureHavePaginate = new APIfeatures(Products.find({category:category}),req.query)
-            .filtering().sorting().paginating()
+            let features
+            let featureHavePaginate
+            if(category!=="all"){
+                features = new APIfeatures(Products.find({category:category}),req.query)
+                .filtering()
+                featureHavePaginate = new APIfeatures(Products.find({category:category}),req.query)
+                .filtering().sorting().paginating()
+            }
+            else{
+                features = new APIfeatures(Products.find(),req.query)
+                .filtering()
+                featureHavePaginate = new APIfeatures(Products.find(),req.query)
+                .filtering().sorting().paginating()
+            }
             // const products = await featureHavePaginate.query
             // const totalProduct = await features.query
             const result = await Promise.all([featureHavePaginate.query,features.query])

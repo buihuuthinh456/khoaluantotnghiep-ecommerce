@@ -91,6 +91,9 @@ const productCtrl = {
         try {
             // return res.status(200).json(products)
             const {limit,page} = req.query 
+            if(req.query.category.regex==='all'){
+                req.query.category.regex=""
+            }
             const features = new APIfeatures(Products.find(),req.query)
             .filtering()
             const featureHavePaginate = new APIfeatures(Products.find(),req.query)
