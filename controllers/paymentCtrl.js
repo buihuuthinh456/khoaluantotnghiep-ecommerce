@@ -21,6 +21,15 @@ const paymentCtrl = {
             return res.status(500).json({msg:error.message})
         }
     },
+    getHistoryByUserId:async(req,res)=>{
+        try {
+            const {id} = req.params
+            const orders = await Order.find({userId:id})
+            return res.status(200).json(orders)
+        } catch (error) {
+            return res.status(500).json({msg:error.message})
+        }
+    },
     createPayment: async (req,res)=>{
         const _id = req.user.id
         const {cart,address} = req.body
@@ -45,7 +54,7 @@ const paymentCtrl = {
         const requestId = partnerCode + new Date().getTime();
         const orderId = requestId;
         const orderInfo = "pay with MoMo";
-        const redirectUrl = "http://localhost:3000/successful";
+        const redirectUrl = "https://tshopic.netlify.app/successful";
         const ipnUrl = "https://khoaluantotnghiep-ecommerce.herokuapp.com/api/payment/ipn";
         const {amount} = req.body
         const requestType = "captureWallet"
@@ -175,7 +184,7 @@ const paymentCtrl = {
             userId:_id
         }
         const extraDataString = Base64.encodeURI(JSON.stringify(extraData))
-        const url_return = 'http://localhost:3000/successful'
+        const url_return = 'https://tshopic.netlify.app/successful'
         const payment_Url = `${url_return}?amount=${amount}`
                                         +`&orderId=${orderId}`
                                         +`&orderInfo=${orderInfo}`

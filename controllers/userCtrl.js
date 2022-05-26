@@ -14,7 +14,7 @@ const userCtrl = {
 
             if(user) return res.status(400).json({msg:"Email này đã có người sử dụng"});
             
-            if(password.length < 6) return res.status(400).json({msg:"Mật khẩu ít nhất phải có 6 ký tự"});
+            if(password.length < 8) return res.status(400).json({msg:"Mật khẩu ít nhất phải có 8 ký tự"});
 
             // Password Encrytion
 
@@ -63,7 +63,7 @@ const userCtrl = {
                 const resetCode = await bcrypt.hash(testAccount.pass,10);
                 await Users.findOneAndUpdate({email},{resetCode});
                 console.log(resetCode)
-                const urlConfirm = `http://localhost:3000/resetPassword?resetCode=${testAccount.pass}&email=${user.email}`
+                const urlConfirm = `https://tshopic.netlify.app/resetPassword?resetCode=${testAccount.pass}&email=${user.email}`
                 const options = {
                     from: adminEmail, // địa chỉ admin email bạn dùng để gửi
                     to: user.email, // địa chỉ gửi đến
@@ -86,12 +86,13 @@ const userCtrl = {
             const {resetCode,email} = req.query
             const {password} = req.body
             const user = await Users.findOne({email})
-            console.log(user)
+            if(password.length < 8) return res.status(400).json({msg:"Mật khẩu mới phải ít nhất phải có 8 ký tự"});
+            if(user?.resetCode==="") return res.status(400).json({msg:"Không có yêu cầu từ người dùng"})
             if(user){
                 const check = await bcrypt.compare(resetCode,user.resetCode)
                 if(check){
                     const passwordHash = await bcrypt.hash(password,10);
-                    const user = await Users.findOneAndUpdate({email},{password:passwordHash, resetCode:""})
+                    await Users.findOneAndUpdate({email},{password:passwordHash, resetCode:""})
                     return res.status(200).json({msg:"Thay đổi mật khẩu thành công"})
                 }
                 else{
@@ -108,18 +109,18 @@ const userCtrl = {
         try {
             const _id = req.user.id
             const {password, newPassword} = req.body
-            const newPasswordHash = await bcrypt.hash(newPassword,10)
             const user = await Users.findById(_id)
             if(!user) return res.status(400).json({msg:"Không hợp lệ"})
             const isMatch = await bcrypt.compare(password, user.password)
             if(isMatch){
+                const newPasswordHash = await bcrypt.hash(newPassword,10)
                 await Users.findByIdAndUpdate(_id,{
                     password:newPasswordHash
                 })
+                return res.status(200).json({msg:"Thay đổi mật khẩu thành công"})
             }else{
                 return res.status(400).json({msg:"Mật khẩu hiện tại không đúng"})
             }
-            return res.status(200).json({msg:"Thay đổi mật khẩu thành công"})
         } catch (error) {
             return res.status(500).json({msg:error.message})
         }
@@ -148,9 +149,19 @@ const userCtrl = {
         try {
             const user = await Users.findById(req.user.id).select('-password');
             if(!user) return res.status(400).json({msg:"User does not exists"});
-            res.json(user)
+            return res.status(200).json(user)
         } catch (err) {
             return res.status(500).json({msg:err.message})
+        }
+    },
+    getUserById: async(req,res)=>{
+        try {
+            const {id} = req.params
+            const user = await Users.findById(id).select('-password');
+            if(!user) return res.status(400).json({msg:"User does not exists"});
+            return res.status(200).json(user)
+        } catch (error) {
+            return res.status(500).json({msg:error.message})
         }
     },
     getAllUser: async(req,res)=>{
