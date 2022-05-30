@@ -148,7 +148,7 @@ const userCtrl = {
     getUser:async(req,res)=>{
         try {
             const user = await Users.findById(req.user.id).select('-password');
-            if(!user) return res.status(400).json({msg:"User does not exists"});
+            if(!user) return res.status(400).json({msg:"Người dùng không tồn tại"});
             return res.status(200).json(user)
         } catch (err) {
             return res.status(500).json({msg:err.message})
@@ -158,8 +158,17 @@ const userCtrl = {
         try {
             const {id} = req.params
             const user = await Users.findById(id).select('-password');
-            if(!user) return res.status(400).json({msg:"User does not exists"});
+            if(!user) return res.status(400).json({msg:"Người dùng không tồn tại"});
             return res.status(200).json(user)
+        } catch (error) {
+            return res.status(500).json({msg:error.message})
+        }
+    },
+    deleteUserById: async(req,res)=>{
+        try {
+            const {id} = req.params
+            await Users.findByIdAndDelete(id)
+            return res.status(200).json({msg:"Xóa người dùng thành công"})
         } catch (error) {
             return res.status(500).json({msg:error.message})
         }

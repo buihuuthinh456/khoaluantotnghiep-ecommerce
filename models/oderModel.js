@@ -37,6 +37,11 @@ const orderSchema = new mongoose.Schema({
     userId:{
         type:String,
         required:true
+    },
+    discount:{
+        type:Object,
+        require:false,
+        default:null
     }
 },{timestamps:true})
 

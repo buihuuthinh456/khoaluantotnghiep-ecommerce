@@ -12,6 +12,11 @@ router.route('/password')
 router.route('/resetPassword')
         .post(userCtrl.confirmResetPassword)
 
+router.route('/option/:id')
+        .get(auth,userCtrl.getUserById)
+        .delete(auth,authAdmin,userCtrl.deleteUserById)
+
+
 
 router.route('/cart')
         .post(auth,userCtrl.newCart)

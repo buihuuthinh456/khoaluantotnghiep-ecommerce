@@ -3,6 +3,9 @@ const User = require('../models/userModel')
 const {Base64} = require('js-base64');
 const crypto = require('crypto');
 
+
+
+
 const paymentCtrl = {
     getOrders: async(req,res)=>{
         try {
@@ -209,7 +212,28 @@ const paymentCtrl = {
            return res.status(500).json({msg:error.message})
        }
         
-    }
+    },
+    updateOrder:async(req,res)=>{
+        try {
+            // const discount = {
+            //     type:"number",
+            //     value:50000
+            // }
+            // const discount = {
+            //     type:"rate%",
+            //     value:10
+            // }
+             const {_id,discount} = req.body;
+             const newOrder = await Order.findByIdAndUpdate(_id,{
+                 discount
+             },{new:true});
+             
+             return res.status(200).json(newOrder)
+        } catch (error) {
+            return res.status(500).json({msg:error.message})
+        }
+         
+     },
 }
 
 module.exports = paymentCtrl;

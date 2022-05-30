@@ -12,7 +12,12 @@ router.route('/payment/cash')
         .post(auth,paymentCtrl.createOrderCash)
 router.route('/payment/history')
         .get(auth,paymentCtrl.getHistoryPayment)
+router.route('/payment/history/user/:id')
+        .get(authAdmin,paymentCtrl.getHistoryByUserId)
 router.post('/payment/create-payment',auth,paymentCtrl.createPayment)
+
+router.route('/payment/order')
+        .put(auth,authAdmin,paymentCtrl.updateOrder)
 
 
 
