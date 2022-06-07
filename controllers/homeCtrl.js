@@ -86,11 +86,46 @@ const homeCtrl = {
             const dateStart = moment(req.query.dateStart).format("YYYY-MM-DD")
             const dateEnd = moment(req.query.dateEnd).format("YYYY-MM-DD")
 
-            const paymentData = await Orders.find({
+            let paymentData = await Orders.find({
                 createdAt:{
                     $gte:dateStart,$lte:dateEnd
                 }
             })
+
+            paymentData = paymentData.reduce((result,item,indexCur)=>{
+                
+                if(result?.length!==0){
+                    const itemRes = {
+                        "createdAt":moment(item.createdAt).format("YYYY-MM-DD"),
+                        "amount":item.amount,
+                        "countOrder":1,
+                    }
+                    const index = result.findIndex((el)=>{
+                        const createdAtItem = moment(item.createdAt).format("YYYY-MM-DD");
+                        const createdAtEl = moment(el.createdAt).format("YYYY-MM-DD");
+                        if(createdAtEl===createdAtItem){
+                            return true
+                        }else{
+                            return false
+                        }
+                    })
+
+                    if(index!==-1){
+                        result[index].amount = result[index].amount + item.amount
+                        result[index].countOrder = result[index].countOrder + 1
+                        return [...result]
+                    }else{
+                        return [...result,itemRes]
+                    }
+                }else{
+                    const itemRes = {
+                        "createdAt":moment(item.createdAt).format("YYYY-MM-DD"),
+                        "amount":item.amount,
+                        "countOrder":1
+                    }
+                    return [...result,itemRes]
+                }
+            },[])
 
             const result = {
                 accessData: Data,
