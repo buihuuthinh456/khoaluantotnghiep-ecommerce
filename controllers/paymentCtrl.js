@@ -9,8 +9,19 @@ const crypto = require('crypto');
 const paymentCtrl = {
     getOrders: async(req,res)=>{
         try {
-            const orders = await Order.find();
-            return res.status(200).json(orders)
+            if(req.query?.dateStart && req.query?.dateEnd){
+                const dateStart = moment(req.query.dateStart).format("YYYY-MM-DD")
+                const dateEnd = moment(req.query.dateEnd).format("YYYY-MM-DD")
+                const orders = await Orders.find({
+                    createdAt:{
+                        $gte:dateStart,$lte:dateEnd
+                    }
+                })
+                return req.status(200).json(orders);
+            }else{
+                const orders = await Order.find();
+                return res.status(200).json(orders)
+            }
         } catch (err) {
             return res.status(500).json({msg:err.message})
         }
