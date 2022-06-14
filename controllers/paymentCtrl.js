@@ -1,5 +1,6 @@
 const Order = require('../models/oderModel');
-const User = require('../models/userModel')
+const User = require('../models/userModel');
+const moment = require('moment');
 const {Base64} = require('js-base64');
 const crypto = require('crypto');
 
@@ -11,7 +12,7 @@ const paymentCtrl = {
         try {
             if(req.query?.dateStart && req.query?.dateEnd){
                 const dateStart = moment(req.query.dateStart).format("YYYY-MM-DD")
-                const dateEnd = moment(req.query.dateEnd).format("YYYY-MM-DD")
+                const dateEnd = moment(req.query.dateEnd).format("YYYY-MM-DD") + 'T23:59:59';
                 const orders = await Orders.find({
                     createdAt:{
                         $gte:dateStart,$lte:dateEnd

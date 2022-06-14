@@ -30,9 +30,9 @@ const orderSchema = new mongoose.Schema({
         required:true,
     },
     stateTrans:{
-        type:Boolean,
+        type:Number,
         required:false,
-        default:false
+        default:0
     },
     userId:{
         type:String,

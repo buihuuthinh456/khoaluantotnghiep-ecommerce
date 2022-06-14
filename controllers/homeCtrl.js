@@ -84,7 +84,7 @@ const homeCtrl = {
 
 
             const dateStart = moment(req.query.dateStart).format("YYYY-MM-DD")
-            const dateEnd = moment(req.query.dateEnd).format("YYYY-MM-DD")
+            const dateEnd = moment(req.query.dateEnd).format("YYYY-MM-DD") + 'T23:59:59';
 
             let paymentData = await Orders.find({
                 createdAt:{
